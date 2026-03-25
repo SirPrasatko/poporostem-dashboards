@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Poporostem — Leden B2C YoY</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-annotation@3.1.0/dist/chartjs-plugin-annotation.min.js"></script>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: #f5f5f0; color: #333; padding: 20px; }
+.header { text-align: center; margin-bottom: 20px; }
+.header h1 { color: #009901; font-size: 24px; }
+.header p { color: #888; font-size: 13px; margin-top: 4px; }
+.chart-wrap { background: white; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.08); padding: 24px; max-width: 1200px; margin: 0 auto; }
+.chart-wrap canvas { max-height: 500px; }
+.kpi-row { display: flex; gap: 20px; justify-content: center; margin-bottom: 20px; }
+.kpi { background: white; padding: 14px 24px; border-radius: 10px; text-align: center; box-shadow: 0 2px 8px rgba(0,0,0,0.08); }
+.kpi .value { font-size: 22px; font-weight: 700; color: #009901; }
+.kpi .value.muted { color: #643403; }
+.kpi .label { font-size: 12px; color: #888; margin-top: 2px; }
+.annotation-box { background: #fff8e1; border: 2px solid #f8a102; border-radius: 8px; padding: 14px 18px; max-width: 500px; margin: 16px auto 0; font-size: 13px; line-height: 1.6; }
+.annotation-box strong { color: #643403; }
+</style>
+</head>
+<body>
+<div class="header">
+    <h1>Leden 2025 vs 2026 — B2C obrat bez DPH</h1>
+    <p>Zarovnáno na dny v týdnu · Bez VO, influencerů, storen, čeká na zaplacení</p>
+</div>
+<div class="kpi-row">
+    <div class="kpi"><div class="value muted">173,428 Kč</div><div class="label">Leden 2025</div></div>
+    <div class="kpi"><div class="value">376,125 Kč</div><div class="label">Leden 2026</div></div>
+    <div class="kpi"><div class="value">+117 %</div><div class="label">YoY</div></div>
+</div>
+<div class="chart-wrap"><canvas id="chart"></canvas></div>
+
+<script>
+const ctx = document.getElementById('chart').getContext('2d');
+const labels2026 = ["31.12. St", "01.01. \u010ct", "02.01. P\u00e1", "03.01. So", "04.01. Ne", "05.01. Po", "06.01. \u00dat", "07.01. St", "08.01. \u010ct", "09.01. P\u00e1", "10.01. So", "11.01. Ne", "12.01. Po", "13.01. \u00dat", "14.01. St", "15.01. \u010ct", "16.01. P\u00e1", "17.01. So", "18.01. Ne", "19.01. Po", "20.01. \u00dat", "21.01. St", "22.01. \u010ct", "23.01. P\u00e1", "24.01. So", "25.01. Ne", "26.01. Po", "27.01. \u00dat", "28.01. St", "29.01. \u010ct", "30.01. P\u00e1", "31.01. So"];
+const labels2025 = ["01.01.2025", "02.01.2025", "03.01.2025", "04.01.2025", "05.01.2025", "06.01.2025", "07.01.2025", "08.01.2025", "09.01.2025", "10.01.2025", "11.01.2025", "12.01.2025", "13.01.2025", "14.01.2025", "15.01.2025", "16.01.2025", "17.01.2025", "18.01.2025", "19.01.2025", "20.01.2025", "21.01.2025", "22.01.2025", "23.01.2025", "24.01.2025", "25.01.2025", "26.01.2025", "27.01.2025", "28.01.2025", "29.01.2025", "30.01.2025", "31.01.2025", "01.02.2025"];
+const vals2025 = [7951.0, 0, 1638.0, 4875.0, 2111.0, 3141.0, 3086.0, 4830.0, 1712.0, 3025.0, 0, 8359.0, 4554.0, 7299.0, 1691.0, 1481.0, 6072.0, 479.0, 5451.0, 5943.0, 2009.0, 18438.0, 4399.0, 6728.0, 5697.0, 12408.0, 5109.0, 3683.0, 13844.0, 19100.0, 8315.0, 16254.0];
+const vals2026 = [8996.0, 7796.0, 13948.0, 4288.0, 18012.0, 12757.0, 2288.0, 9889.0, 6932.0, 9764.0, 6140.0, 10072.0, 9457.0, 11780.0, 14781.0, 9480.0, 10996.0, 8755.0, 9917.0, 12983.0, 13526.0, 15042.0, 11881.0, 11610.0, 8531.0, 15714.0, 24586.0, 24513.0, 5448.0, 28122.0, 11909.0, 15208.0];
+const outlineBar = [true, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false];
+const outlineDot = [false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, true];
+const peakIndices = [];
+
+const weekendBands = {};
+labels2026.forEach((l, i) => {
+    if (l.endsWith('So')) {
+        weekendBands['wk' + i] = {
+            type: 'box', xMin: i - 0.5, xMax: i + 1.5,
+            backgroundColor: 'rgba(0,0,0,0.04)', borderWidth: 0, drawTime: 'beforeDatasetsDraw',
+        };
+    }
+});
+
+
+new Chart(ctx, {
+    type: 'bar',
+    data: {
+        labels: labels2026,
+        datasets: [
+            {
+                label: 'Leden 2026',
+                data: vals2026,
+                backgroundColor: vals2026.map((v, i) => outlineBar[i] ? 'rgba(0,0,0,0)' : (v > 0 ? 'rgba(0,153,1,0.7)' : 'rgba(0,153,1,0.15)')),
+                borderColor: vals2026.map((v, i) => 'rgba(0,153,1,' + (outlineBar[i] ? '0.5)' : '0.9)')),
+                borderWidth: vals2026.map((v, i) => outlineBar[i] ? 2 : 0),
+                borderRadius: 3, order: 1,
+            },
+            {
+                label: 'Leden 2025',
+                data: vals2025,
+                type: 'line',
+                borderColor: '#643403', borderWidth: 2,
+                pointRadius: vals2025.map((v, i) => {
+                    if (outlineDot[i]) return 3;
+                    if (peakIndices.includes(i)) return 5;
+                    return 2;
+                }),
+                pointBackgroundColor: vals2025.map((v, i) => {
+                    if (outlineDot[i]) return 'white';
+                    if (peakIndices.includes(i)) return '#f8a102';
+                    return '#643403';
+                }),
+                pointBorderColor: vals2025.map((v, i) => peakIndices.includes(i) ? '#f8a102' : '#643403'),
+                pointBorderWidth: vals2025.map((v, i) => outlineDot[i] ? 2 : 1),
+                segment: {
+                    borderDash: ctx2 => {
+                        if (outlineDot[ctx2.p0DataIndex] || outlineDot[ctx2.p1DataIndex]) return [5, 4];
+                        return undefined;
+                    }
+                },
+                fill: false, order: 0,
+            },
+        ]
+    },
+    options: {
+        responsive: true,
+        interaction: { mode: 'index', intersect: false },
+        plugins: {
+            tooltip: { callbacks: {
+                afterTitle: (items) => labels2025[items[0].dataIndex],
+                label: (ctx) => ctx.dataset.label + ': ' + ctx.raw.toLocaleString('cs-CZ') + ' Kč',
+            } },
+            legend: { position: 'bottom' },
+            annotation: { annotations: weekendBands }
+        },
+        scales: {
+            y: { ticks: { callback: v => (v / 1000) + 'K' }, grid: { color: 'rgba(0,0,0,0.06)' } },
+            x: { ticks: { maxRotation: 90, font: { size: 10 } }, grid: { display: false } }
+        }
+    }
+});
+</script>
+</body>
+</html>

@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Poporostem — Únor B2C YoY</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-annotation@3.1.0/dist/chartjs-plugin-annotation.min.js"></script>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: #f5f5f0; color: #333; padding: 20px; }
+.header { text-align: center; margin-bottom: 20px; }
+.header h1 { color: #009901; font-size: 24px; }
+.header p { color: #888; font-size: 13px; margin-top: 4px; }
+.chart-wrap { background: white; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.08); padding: 24px; max-width: 1200px; margin: 0 auto; }
+.chart-wrap canvas { max-height: 500px; }
+.kpi-row { display: flex; gap: 20px; justify-content: center; margin-bottom: 20px; }
+.kpi { background: white; padding: 14px 24px; border-radius: 10px; text-align: center; box-shadow: 0 2px 8px rgba(0,0,0,0.08); }
+.kpi .value { font-size: 22px; font-weight: 700; color: #009901; }
+.kpi .value.muted { color: #643403; }
+.kpi .label { font-size: 12px; color: #888; margin-top: 2px; }
+.annotation-box { background: #fff8e1; border: 2px solid #f8a102; border-radius: 8px; padding: 14px 18px; max-width: 500px; margin: 16px auto 0; font-size: 13px; line-height: 1.6; }
+.annotation-box strong { color: #643403; }
+</style>
+</head>
+<body>
+<div class="header">
+    <h1>Únor 2025 vs 2026 — B2C obrat bez DPH</h1>
+    <p>Zarovnáno na dny v týdnu · Bez VO, influencerů, storen, čeká na zaplacení</p>
+</div>
+<div class="kpi-row">
+    <div class="kpi"><div class="value muted">384,719 Kč</div><div class="label">Únor 2025</div></div>
+    <div class="kpi"><div class="value">608,947 Kč</div><div class="label">Únor 2026</div></div>
+    <div class="kpi"><div class="value">+58 %</div><div class="label">YoY</div></div>
+</div>
+<div class="chart-wrap"><canvas id="chart"></canvas></div>
+
+<div class="annotation-box">
+    <strong>Peak 23.–24.2.2025:</strong><br>23.2.: cihlovydum10 5×, NTPN10 2×<br>24.2.: ivana10 9×, petrazahradnici 3× (30 obj, 40K = 2,5× denní průměr)
+</div>
+<script>
+const ctx = document.getElementById('chart').getContext('2d');
+const labels2026 = ["31.01. So", "01.02. Ne", "02.02. Po", "03.02. \u00dat", "04.02. St", "05.02. \u010ct", "06.02. P\u00e1", "07.02. So", "08.02. Ne", "09.02. Po", "10.02. \u00dat", "11.02. St", "12.02. \u010ct", "13.02. P\u00e1", "14.02. So", "15.02. Ne", "16.02. Po", "17.02. \u00dat", "18.02. St", "19.02. \u010ct", "20.02. P\u00e1", "21.02. So", "22.02. Ne", "23.02. Po", "24.02. \u00dat", "25.02. St", "26.02. \u010ct", "27.02. P\u00e1", "28.02. So"];
+const labels2025 = ["01.02.2025", "02.02.2025", "03.02.2025", "04.02.2025", "05.02.2025", "06.02.2025", "07.02.2025", "08.02.2025", "09.02.2025", "10.02.2025", "11.02.2025", "12.02.2025", "13.02.2025", "14.02.2025", "15.02.2025", "16.02.2025", "17.02.2025", "18.02.2025", "19.02.2025", "20.02.2025", "21.02.2025", "22.02.2025", "23.02.2025", "24.02.2025", "25.02.2025", "26.02.2025", "27.02.2025", "28.02.2025", "01.03.2025"];
+const vals2025 = [16254.0, 11204.0, 21636.0, 21574.0, 5998.0, 6054.0, 11713.0, 9111.0, 7091.0, 9808.0, 8473.0, 20440.0, 9096.0, 3472.0, 17488.0, 11760.0, 8035.0, 4893.0, 2555.0, 3799.0, 11075.0, 13863.0, 24510.0, 40339.0, 31411.0, 13180.0, 16528.0, 23359.0, 17314.0];
+const vals2026 = [15208.0, 17046.0, 16170.0, 18035.0, 10270.0, 7246.0, 11433.0, 30815.0, 9625.0, 17158.0, 18613.0, 16171.0, 21725.0, 13794.0, 28417.0, 34742.0, 44486.0, 15139.0, 13362.0, 33026.0, 25899.0, 12022.0, 28744.0, 33303.0, 24149.0, 27032.0, 14839.0, 31013.0, 34673.0];
+const outlineBar = [true, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false];
+const outlineDot = [false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, true];
+const peakIndices = [22, 23];
+
+const weekendBands = {};
+labels2026.forEach((l, i) => {
+    if (l.endsWith('So')) {
+        weekendBands['wk' + i] = {
+            type: 'box', xMin: i - 0.5, xMax: i + 1.5,
+            backgroundColor: 'rgba(0,0,0,0.04)', borderWidth: 0, drawTime: 'beforeDatasetsDraw',
+        };
+    }
+});
+
+        weekendBands['peak'] = {
+            type: 'box', xMin: 22 - 0.5, xMax: 23 + 0.5,
+            backgroundColor: 'rgba(248,161,2,0.12)', borderColor: 'rgba(248,161,2,0.5)',
+            borderWidth: 1, drawTime: 'beforeDatasetsDraw',
+            label: { display: true, content: 'ivana10 + cihlovydum', position: 'start',
+                font: { size: 11, style: 'italic' }, color: '#643403' }
+        };
+
+new Chart(ctx, {
+    type: 'bar',
+    data: {
+        labels: labels2026,
+        datasets: [
+            {
+                label: 'Únor 2026',
+                data: vals2026,
+                backgroundColor: vals2026.map((v, i) => outlineBar[i] ? 'rgba(0,0,0,0)' : (v > 0 ? 'rgba(0,153,1,0.7)' : 'rgba(0,153,1,0.15)')),
+                borderColor: vals2026.map((v, i) => 'rgba(0,153,1,' + (outlineBar[i] ? '0.5)' : '0.9)')),
+                borderWidth: vals2026.map((v, i) => outlineBar[i] ? 2 : 0),
+                borderRadius: 3, order: 1,
+            },
+            {
+                label: 'Únor 2025',
+                data: vals2025,
+                type: 'line',
+                borderColor: '#643403', borderWidth: 2,
+                pointRadius: vals2025.map((v, i) => {
+                    if (outlineDot[i]) return 3;
+                    if (peakIndices.includes(i)) return 5;
+                    return 2;
+                }),
+                pointBackgroundColor: vals2025.map((v, i) => {
+                    if (outlineDot[i]) return 'white';
+                    if (peakIndices.includes(i)) return '#f8a102';
+                    return '#643403';
+                }),
+                pointBorderColor: vals2025.map((v, i) => peakIndices.includes(i) ? '#f8a102' : '#643403'),
+                pointBorderWidth: vals2025.map((v, i) => outlineDot[i] ? 2 : 1),
+                segment: {
+                    borderDash: ctx2 => {
+                        if (outlineDot[ctx2.p0DataIndex] || outlineDot[ctx2.p1DataIndex]) return [5, 4];
+                        return undefined;
+                    }
+                },
+                fill: false, order: 0,
+            },
+        ]
+    },
+    options: {
+        responsive: true,
+        interaction: { mode: 'index', intersect: false },
+        plugins: {
+            tooltip: { callbacks: {
+                afterTitle: (items) => labels2025[items[0].dataIndex],
+                label: (ctx) => ctx.dataset.label + ': ' + ctx.raw.toLocaleString('cs-CZ') + ' Kč',
+            } },
+            legend: { position: 'bottom' },
+            annotation: { annotations: weekendBands }
+        },
+        scales: {
+            y: { ticks: { callback: v => (v / 1000) + 'K' }, grid: { color: 'rgba(0,0,0,0.06)' } },
+            x: { ticks: { maxRotation: 90, font: { size: 10 } }, grid: { display: false } }
+        }
+    }
+});
+</script>
+</body>
+</html>
