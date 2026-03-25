@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Poporostem — Analytický dashboard</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js"></script>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: #f5f5f0; color: #333; padding: 20px; max-width: 1300px; margin: 0 auto; }
+h1 { color: #009901; text-align: center; font-size: 24px; margin-bottom: 4px; }
+.subtitle { text-align: center; color: #888; font-size: 13px; margin-bottom: 24px; }
+.section { margin-bottom: 28px; }
+.section h2 { color: #643403; font-size: 16px; margin-bottom: 12px; border-bottom: 2px solid #009901; padding-bottom: 4px; }
+.three-col { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px; }
+.card { background: white; border-radius: 10px; padding: 16px; box-shadow: 0 1px 6px rgba(0,0,0,0.06); }
+.card h3 { font-size: 13px; color: #888; margin-bottom: 8px; text-align: center; }
+.card canvas { max-height: 220px; }
+.insights { background: #fff8e1; border: 2px solid #f8a102; border-radius: 10px; padding: 16px 20px; }
+.insights h2 { color: #643403; border-bottom: none; font-size: 15px; margin-bottom: 8px; }
+.insights ul { padding-left: 20px; font-size: 13px; line-height: 1.8; }
+.gauge-row { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px; }
+.gauge { background: white; border-radius: 10px; padding: 16px; text-align: center; box-shadow: 0 1px 6px rgba(0,0,0,0.06); }
+.gauge h3 { font-size: 13px; color: #888; margin-bottom: 4px; }
+.gauge .val { font-size: 28px; font-weight: 700; color: #009901; }
+.gauge .label { font-size: 11px; color: #aaa; }
+.nav { display: flex; gap: 10px; justify-content: center; margin-top: 20px; font-size: 14px; }
+.nav a { color: #643403; text-decoration: none; padding: 8px 16px; border-radius: 8px; background: white; box-shadow: 0 1px 4px rgba(0,0,0,0.08); }
+@media (max-width: 800px) { .three-col, .gauge-row { grid-template-columns: 1fr; } }
+</style>
+</head>
+<body>
+
+<h1>Poporostem — Analytický přehled</h1>
+<p class="subtitle">B2C obrat bez DPH · 2025+2026 | 2026 | Březen 2026 · Zarovnáno na podíly (%)</p>
+
+<!-- WEEKEND GAUGES -->
+<div class="section">
+<h2>Podíl víkendu na obratu</h2>
+<div class="gauge-row">
+    <div class="gauge"><h3>2025 + 2026</h3><div class="val">28.2 %</div><div class="label">víkend</div></div>
+    <div class="gauge"><h3>2026</h3><div class="val">30.5 %</div><div class="label">víkend</div></div>
+    <div class="gauge"><h3>Březen 2026</h3><div class="val">31.3 %</div><div class="label">víkend</div></div>
+</div>
+</div>
+
+<!-- HOURS -->
+<div class="section">
+<h2>Obrat podle hodiny</h2>
+<div class="three-col">
+    <div class="card"><h3>2025 + 2026</h3><canvas id="h1"></canvas></div>
+    <div class="card"><h3>2026</h3><canvas id="h2"></canvas></div>
+    <div class="card"><h3>Březen 2026</h3><canvas id="h3"></canvas></div>
+</div>
+</div>
+
+<!-- DAY OF WEEK -->
+<div class="section">
+<h2>Obrat podle dne v týdnu</h2>
+<div class="three-col">
+    <div class="card"><h3>2025 + 2026</h3><canvas id="d1"></canvas></div>
+    <div class="card"><h3>2026</h3><canvas id="d2"></canvas></div>
+    <div class="card"><h3>Březen 2026</h3><canvas id="d3"></canvas></div>
+</div>
+</div>
+
+<!-- THIRDS -->
+<div class="section">
+<h2>Obrat podle třetin měsíce</h2>
+<div class="three-col">
+    <div class="card"><h3>2025 + 2026</h3><canvas id="t1"></canvas></div>
+    <div class="card"><h3>2026</h3><canvas id="t2"></canvas></div>
+    <div class="card"><h3>Březen 2026</h3><canvas id="t3"></canvas></div>
+</div>
+</div>
+
+<!-- HALVES -->
+<div class="section">
+<h2>Obrat podle polovin měsíce</h2>
+<div class="three-col">
+    <div class="card"><h3>2025 + 2026</h3><canvas id="hf1"></canvas></div>
+    <div class="card"><h3>2026</h3><canvas id="hf2"></canvas></div>
+    <div class="card"><h3>Březen 2026</h3><canvas id="hf3"></canvas></div>
+</div>
+</div>
+
+<!-- INSIGHTS -->
+<div class="section insights">
+<h2>Výrazné rozdíly</h2>
+<ul><li>Nejsilnější hodina se posunula z 10:00 (historicky) na <strong>16:00</strong> (březen 2026)</li>
+<li>Víkendový podíl v březnu 2026 (31.3%) je vyšší než historický průměr (28.2%)</li>
+<li>Nejsilnější třetina březnu 2026: <strong>11.–20.</strong> (42.3%) — historicky 11.–20.</li>
+<li>1. polovina březnu 2026 = 59.4% obratu (historicky 50.9%) — silnější start</li></ul>
+</div>
+
+<div class="nav">
+    <a href="leden.html">Leden YoY</a>
+    <a href="unor.html">Únor YoY</a>
+    <a href="brezen.html">Březen YoY</a>
+    <a href="analytika.html" style="font-weight:700;color:#009901;">Analytika</a>
+</div>
+
+<script>
+Chart.defaults.font.family = '-apple-system, sans-serif';
+Chart.defaults.font.size = 11;
+const G = 'rgba(0,153,1,0.7)';
+const Gb = 'rgba(0,153,1,0.9)';
+
+function barChart(id, labels, data, color, pctSuffix) {
+    const max = Math.max(...data);
+    new Chart(document.getElementById(id), {
+        type: 'bar',
+        data: {
+            labels: labels,
+            datasets: [{ data: data, backgroundColor: data.map(v => v === max ? '#f8a102' : color), borderRadius: 3 }]
+        },
+        options: {
+            responsive: true,
+            plugins: {
+                legend: { display: false },
+                tooltip: { callbacks: { label: ctx => ctx.raw + (pctSuffix || ' %') } }
+            },
+            scales: {
+                y: { ticks: { callback: v => v + '%' }, grid: { color: 'rgba(0,0,0,0.05)' } },
+                x: { grid: { display: false } }
+            }
+        }
+    });
+}
+
+function doughnut(id, labels, data) {
+    new Chart(document.getElementById(id), {
+        type: 'doughnut',
+        data: {
+            labels: labels,
+            datasets: [{ data: data, backgroundColor: ['rgba(0,153,1,0.7)', 'rgba(100,52,3,0.6)'], borderWidth: 0 }]
+        },
+        options: { responsive: true, plugins: { legend: { position: 'bottom', labels: { font: { size: 11 } } } } }
+    });
+}
+
+// Hours
+const hLabels = ["0:00", "1:00", "2:00", "3:00", "4:00", "5:00", "6:00", "7:00", "8:00", "9:00", "10:00", "11:00", "12:00", "13:00", "14:00", "15:00", "16:00", "17:00", "18:00", "19:00", "20:00", "21:00", "22:00", "23:00"];
+barChart('h1', hLabels, [1.1, 0.2, 0.2, 0.1, 0.1, 0.7, 2.1, 3.9, 6.3, 7.0, 7.3, 6.5, 6.3, 6.2, 6.2, 5.8, 5.1, 4.7, 4.5, 5.3, 6.7, 6.5, 5.1, 2.3], G);
+barChart('h2', hLabels, [0.6, 0.1, 0.3, 0.1, 0.1, 0.8, 2.2, 4.7, 6.6, 8.5, 7.5, 5.3, 6.2, 7.6, 5.9, 4.5, 7.0, 4.8, 4.3, 5.1, 6.7, 6.6, 3.3, 1.1], G);
+barChart('h3', hLabels, [0.7, 0.0, 0.3, 0.1, 0.0, 0.6, 1.8, 6.2, 8.2, 8.6, 7.2, 4.2, 5.3, 7.1, 4.9, 4.1, 9.6, 5.4, 2.9, 5.4, 7.6, 6.1, 2.7, 0.9], G);
+
+// Days
+const dLabels = ["Ne", "Po", "\u00dat", "St", "\u010ct", "P\u00e1", "So"];
+barChart('d1', dLabels, [16.7, 16.2, 13.6, 15.7, 13.5, 12.7, 11.5], G);
+barChart('d2', dLabels, [16.9, 18.0, 13.1, 12.9, 13.1, 12.5, 13.6], G);
+barChart('d3', dLabels, [19.4, 18.7, 13.1, 14.5, 11.8, 10.5, 12.0], G);
+
+// Thirds
+const tLabels = ["1.\u201310.", "11.\u201320.", "21.\u2013end"];
+barChart('t1', tLabels, [31.3, 37.1, 31.6], G);
+barChart('t2', tLabels, [31.7, 39.2, 29.1], G);
+barChart('t3', tLabels, [38.9, 42.3, 18.7], G);
+
+// Halves
+const hfLabels = ["1.\u201315.", "16.\u2013end"];
+doughnut('hf1', hfLabels, [50.9, 49.1]);
+doughnut('hf2', hfLabels, [50.5, 49.5]);
+doughnut('hf3', hfLabels, [59.4, 40.6]);
+</script>
+</body>
+</html>
