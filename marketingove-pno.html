@@ -27,14 +27,14 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-
 
 <div class="header">
     <h1>Marketingové PNO — B2C bez DPH</h1>
-    <p>PPC + Influenceři + Affiliate + Správa + Nástroje · Leden 2025 – Březen 2026</p>
+    <p>Leden 2025 – Březen 2026 · Reklama (API) + Influenceři, Affiliate, Správa (tabulka Náklady)</p>
 </div>
 
 <div class="kpi-row">
     <div class="kpi"><div class="value" style="color:#009901">8,845,810 Kč</div><div class="label">Celkové tržby</div></div>
-    <div class="kpi"><div class="value" style="color:#f8a102">1,723,910 Kč</div><div class="label">Marketing celkem</div></div>
-    <div class="kpi"><div class="value" style="color:#643403">19.5 %</div><div class="label">Průměrné marketingové PNO</div></div>
-    <div class="kpi"><div class="value" style="color:#643403">5.1×</div><div class="label">ROAS (celkový marketing)</div></div>
+    <div class="kpi"><div class="value" style="color:#f8a102">1,683,982 Kč</div><div class="label">Marketing celkem</div></div>
+    <div class="kpi"><div class="value" style="color:#643403">19.0 %</div><div class="label">Průměrné marketingové PNO</div></div>
+    <div class="kpi"><div class="value" style="color:#643403">5.3×</div><div class="label">ROAS (celkový marketing)</div></div>
 </div>
 
 <div class="chart-wrap">
@@ -53,8 +53,7 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-
 </div>
 
 <div class="note">
-    Březen 2026: náklady ze sheetu chybí — použity jen PPC z API (Meta+Google+Sklik+Heureka = 116,364 Kč).
-    Skutečné marketingové PNO bude vyšší po doplnění influencerů, affiliate a správy.
+    Březen 2026: reklama z API (Meta+Google+Sklik+Heureka), influenceři/affiliate/správa z tabulky chybí — PNO bude vyšší.
 </div>
 
 <div class="nav">
@@ -62,7 +61,6 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-
     <a href="unor.html">Únor</a>
     <a href="brezen.html">Březen</a>
     <a href="analytika.html">Analytika</a>
-    <a href="trzby-vs-reklama.html">Tržby vs Reklama (PPC)</a>
     <a href="marketingove-pno.html" style="font-weight:700;color:#009901;">Marketingové PNO</a>
     <a href="trzby-vs-naklady.html">Tržby vs Náklady</a>
 </div>
@@ -71,12 +69,16 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-
 const fmt = v => v.toLocaleString('cs-CZ') + ' Kč';
 const labels = ["Led 25", "\u00dano 25", "B\u0159e 25", "Dub 25", "Kv\u011b 25", "\u010cvn 25", "\u010cvc 25", "Srp 25", "Z\u00e1\u0159 25", "\u0158\u00edj 25", "Lis 25", "Pro 25", "Led 26", "\u00dano 26", "B\u0159e 26"];
 const rev = [173428.0, 384718.0, 759273.0, 848309.0, 951992.0, 775573.0, 623319.0, 443912.0, 387232.0, 330867.0, 542029.0, 680629.0, 376124.0, 608948.0, 959457.0];
-const mktgTotal = [24588, 68768, 87267, 110888, 124152, 192543, 92946, 102902, 88856, 236730, 112351, 234894, 124436, 119589, 3000];
-const mktgPPC = [12119, 34784, 50944, 69487, 80475, 104663, 52793, 66605, 45955, 71691, 52014, 112520, 71569, 97177, 0];
-const mktgInfl = [0, 14500, 9000, 11000, 11000, 50000, 11000, 11000, 21000, 37280, 35280, 76280, 32280, 4500, 0];
-const mktgAffil = [2409, 9878, 14803, 19321, 21838, 21343, 16343, 8619, 7921, 12980, 10796, 28964, 4445, 0, 0];
-const mktgOther = [10060, 9606, 12520, 11079, 10839, 16537, 12810, 16678, 13981, 114778, 14261, 17130, 16142, 17912, 3000];
-const pno = [14.2, 17.9, 11.5, 13.1, 13.0, 24.8, 14.9, 23.2, 22.9, 71.5, 20.7, 34.5, 33.1, 19.6, 0.3];
+const mktgTotal = [24767, 73699, 94829, 122175, 128151, 175185, 100771, 83715, 90364, 114704, 110654, 200033, 119370, 129199, 116366];
+const vMeta = [8228, 33371, 42958, 65772, 65782, 71987, 47590, 42002, 45245, 32487, 19711, 33342, 33627, 45558, 59281];
+const vGoogle = [3008, 4579, 11104, 11052, 14087, 10146, 9963, 4054, 1398, 16937, 28450, 47914, 34534, 62609, 54146];
+const vSklik = [865, 1560, 3993, 3407, 3752, 3826, 2453, 2837, 1874, 2524, 1351, 714, 1775, 2263, 2342];
+const vHeureka = [197, 205, 451, 544, 853, 1346, 612, 1135, 295, 418, 805, 579, 467, 437, 597];
+const vInfl = [0, 14500, 9000, 11000, 11000, 50000, 11000, 11000, 21000, 37280, 35280, 76280, 32280, 4500, 0];
+const vAffil = [2409, 9878, 14803, 19321, 21838, 21343, 16343, 8619, 7921, 12980, 10796, 28964, 4445, 0, 0];
+const vSprava = [8000, 8000, 8000, 8000, 8000, 8000, 8000, 8000, 8000, 8000, 8000, 8000, 8000, 8000, 0];
+const vNastroje = [2060, 1606, 4520, 3079, 2839, 8537, 4810, 6068, 4631, 4078, 6261, 4240, 4242, 5832, 0];
+const pno = [14.3, 19.2, 12.5, 14.4, 13.5, 22.6, 16.2, 19.4, 23.7, 65.7, 20.4, 30.1, 32.8, 21.9, 12.4];
 
 new Chart(document.getElementById('mainChart'), {
     type: 'bar',
@@ -95,11 +97,17 @@ new Chart(document.getElementById('mainChart'), {
                 label: ctx => ctx.dataset.label + ': ' + fmt(ctx.raw),
                 afterBody: items => {
                     const i = items[0].dataIndex;
-                    return '\nPPC: ' + fmt(mktgPPC[i]) +
-                           '\nInfluenceři: ' + fmt(mktgInfl[i]) +
-                           '\nAffiliate: ' + fmt(mktgAffil[i]) +
-                           '\nOstatní: ' + fmt(mktgOther[i]) +
-                           '\nPNO: ' + pno[i] + '%';
+                    return '\n--- Reklama (API) ---' +
+                           '\nMeta Ads: ' + fmt(vMeta[i]) +
+                           '\nGoogle Ads: ' + fmt(vGoogle[i]) +
+                           '\nSklik: ' + fmt(vSklik[i]) +
+                           '\nHeureka: ' + fmt(vHeureka[i]) +
+                           '\n--- Tabulka ---' +
+                           '\nInfluenceři: ' + fmt(vInfl[i]) +
+                           '\nAffiliate: ' + fmt(vAffil[i]) +
+                           '\nSpráva: ' + fmt(vSprava[i]) +
+                           '\nNástroje: ' + fmt(vNastroje[i]) +
+                           '\n\nPNO: ' + pno[i] + '%';
                 }
             } },
             legend: { position: 'bottom' },
@@ -117,10 +125,14 @@ new Chart(document.getElementById('stackedChart'), {
     data: {
         labels: labels,
         datasets: [
-            { label: 'PPC (Meta+Google+Sklik)', data: mktgPPC, backgroundColor: 'rgba(192,57,43,0.6)', borderRadius: 2 },
-            { label: 'Influenceři', data: mktgInfl, backgroundColor: 'rgba(248,161,2,0.7)', borderRadius: 2 },
-            { label: 'Affiliate', data: mktgAffil, backgroundColor: 'rgba(52,73,94,0.5)', borderRadius: 2 },
-            { label: 'Správa + Nástroje', data: mktgOther, backgroundColor: 'rgba(149,165,166,0.5)', borderRadius: 2 },
+            { label: 'Meta Ads', data: vMeta, backgroundColor: 'rgba(59,89,152,0.7)', borderRadius: 2 },
+            { label: 'Google Ads', data: vGoogle, backgroundColor: 'rgba(219,68,55,0.6)', borderRadius: 2 },
+            { label: 'Sklik', data: vSklik, backgroundColor: 'rgba(204,0,0,0.4)', borderRadius: 2 },
+            { label: 'Heureka', data: vHeureka, backgroundColor: 'rgba(105,180,0,0.5)', borderRadius: 2 },
+            { label: 'Influenceři', data: vInfl, backgroundColor: 'rgba(248,161,2,0.7)', borderRadius: 2 },
+            { label: 'Affiliate', data: vAffil, backgroundColor: 'rgba(52,73,94,0.5)', borderRadius: 2 },
+            { label: 'Správa (Kupka)', data: vSprava, backgroundColor: 'rgba(127,140,141,0.5)', borderRadius: 2 },
+            { label: 'Nástroje (Ecomail...)', data: vNastroje, backgroundColor: 'rgba(189,195,199,0.5)', borderRadius: 2 },
         ]
     },
     options: {
@@ -134,7 +146,7 @@ new Chart(document.getElementById('pnoChart'), {
     type: 'line',
     data: {
         labels: labels,
-        datasets: [{ label: 'Marketingové PNO', data: pno, borderColor: '#f8a102', backgroundColor: 'rgba(248,161,2,0.1)', borderWidth: 2, pointRadius: 4, pointBackgroundColor: pno.map(v => v > 20 ? '#c0392b' : '#009901'), fill: true }]
+        datasets: [{ label: 'Marketingové PNO', data: pno, borderColor: '#f8a102', backgroundColor: 'rgba(248,161,2,0.1)', borderWidth: 2, pointRadius: 4, pointBackgroundColor: pno.map(v => v > 25 ? '#c0392b' : '#009901'), fill: true }]
     },
     options: {
         responsive: true,
