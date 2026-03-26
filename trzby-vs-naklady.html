@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Poporostem — Tržby vs Náklady</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js"></script>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: #f5f5f0; color: #333; padding: 20px; max-width: 1200px; margin: 0 auto; }
+.header { text-align: center; margin-bottom: 20px; }
+.header h1 { color: #009901; font-size: 24px; }
+.header p { color: #888; font-size: 13px; margin-top: 4px; }
+.chart-wrap { background: white; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.08); padding: 24px; margin-bottom: 20px; }
+.chart-wrap h3 { color: #643403; font-size: 15px; margin-bottom: 12px; }
+.chart-wrap canvas { max-height: 400px; }
+.kpi-row { display: flex; gap: 16px; justify-content: center; margin-bottom: 20px; flex-wrap: wrap; }
+.kpi { background: white; padding: 14px 24px; border-radius: 10px; text-align: center; box-shadow: 0 2px 8px rgba(0,0,0,0.08); }
+.kpi .value { font-size: 22px; font-weight: 700; }
+.kpi .label { font-size: 12px; color: #888; margin-top: 2px; }
+.nav { display: flex; gap: 10px; justify-content: center; margin-top: 20px; font-size: 14px; }
+.nav a { color: #643403; text-decoration: none; padding: 8px 16px; border-radius: 8px; background: white; box-shadow: 0 1px 4px rgba(0,0,0,0.08); }
+</style>
+</head>
+<body>
+
+<div class="header">
+    <h1>Tržby vs Celkové náklady — B2C bez DPH</h1>
+    <p>Leden 2025 – Březen 2026 · Mandatorní + Marketing + Logistika + Balné</p>
+</div>
+
+<div class="kpi-row">
+    <div class="kpi"><div class="value" style="color:#009901">8,845,810 Kč</div><div class="label">Celkové tržby</div></div>
+    <div class="kpi"><div class="value" style="color:#c0392b">2,947,318 Kč</div><div class="label">Celkové náklady</div></div>
+    <div class="kpi"><div class="value" style="color:#643403">5,898,492 Kč</div><div class="label">Marže (tržby − náklady)</div></div>
+    <div class="kpi"><div class="value" style="color:#643403">66.7 %</div><div class="label">Marže %</div></div>
+</div>
+
+<div class="chart-wrap">
+    <h3>Tržby vs Náklady po měsících</h3>
+    <canvas id="mainChart"></canvas>
+</div>
+
+<div class="chart-wrap">
+    <h3>Rozpad nákladů po kategoriích</h3>
+    <canvas id="stackedChart"></canvas>
+</div>
+
+<div class="chart-wrap">
+    <h3>Podíl nákladů na tržbách (%)</h3>
+    <canvas id="ratioChart"></canvas>
+</div>
+
+<div class="nav">
+    <a href="leden.html">Leden</a>
+    <a href="unor.html">Únor</a>
+    <a href="brezen.html">Březen</a>
+    <a href="analytika.html">Analytika</a>
+    <a href="trzby-vs-reklama.html">Tržby vs Reklama</a>
+    <a href="trzby-vs-naklady.html" style="font-weight:700;color:#009901;">Tržby vs Náklady</a>
+</div>
+
+<script>
+const fmt = v => v.toLocaleString('cs-CZ') + ' Kč';
+const labels = ["Led 25", "\u00dano 25", "B\u0159e 25", "Dub 25", "Kv\u011b 25", "\u010cvn 25", "\u010cvc 25", "Srp 25", "Z\u00e1\u0159 25", "\u0158\u00edj 25", "Lis 25", "Pro 25", "Led 26", "\u00dano 26", "B\u0159e 26"];
+const rev = [173428.0, 384718.0, 759273.0, 848309.0, 951992.0, 775573.0, 623319.0, 443912.0, 387232.0, 330867.0, 542029.0, 680629.0, 376124.0, 608948.0, 959457.0];
+const cMand = [19111, 21242, 28683, 38473, 17355, 20308, 26530, 31219, 26295, 27878, 18651, 30938, 25728, 37790, 0];
+const cMktg = [24588, 83268, 96267, 121888, 135152, 203543, 103946, 111292, 104506, 126750, 103071, 220724, 132536, 115509, 0];
+const cLog = [20958, 28307, 52860, 63619, 80406, 64234, 50642, 26633, 48079, 34013, 39496, 52814, 30210, 32206, 0];
+const cBal = [0, 10363, 19860, 38930, 23511, 17196, 20627, 3389, 5400, 14601, 0, 20783, 0, 5925, 0];
+const cTotal = [69408, 147914, 203212, 271076, 262458, 313807, 207722, 178489, 190183, 212175, 167107, 331467, 194684, 197616, 0];
+
+// Main chart: revenue bars + cost line
+new Chart(document.getElementById('mainChart'), {
+    type: 'bar',
+    data: {
+        labels: labels,
+        datasets: [
+            { label: 'Tržby', data: rev, backgroundColor: rev.map((v,i) => i >= 12 ? 'rgba(0,153,1,0.7)' : 'rgba(0,153,1,0.45)'), borderRadius: 3, order: 2, yAxisID: 'y' },
+            { label: 'Náklady celkem', data: cTotal, type: 'line', borderColor: '#c0392b', borderWidth: 2.5, pointRadius: 4, pointBackgroundColor: '#c0392b', fill: false, order: 1, yAxisID: 'y' },
+        ]
+    },
+    options: {
+        responsive: true,
+        interaction: { mode: 'index', intersect: false },
+        plugins: {
+            tooltip: { callbacks: {
+                label: ctx => ctx.dataset.label + ': ' + fmt(ctx.raw),
+                afterBody: items => {
+                    const i = items[0].dataIndex;
+                    const margin = rev[i] - cTotal[i];
+                    const pct = rev[i] > 0 ? (cTotal[i] / rev[i] * 100).toFixed(1) : 0;
+                    return '\nMarže: ' + fmt(margin) + ' (' + (100-pct).toFixed(1) + '%)' +
+                           '\nPodíl nákladů: ' + pct + '%';
+                }
+            } },
+            legend: { position: 'bottom' },
+        },
+        scales: {
+            y: { ticks: { callback: v => (v/1000)+'K' }, grid: { color: 'rgba(0,0,0,0.06)' } },
+            x: { grid: { display: false } }
+        }
+    }
+});
+
+// Stacked costs
+new Chart(document.getElementById('stackedChart'), {
+    type: 'bar',
+    data: {
+        labels: labels,
+        datasets: [
+            { label: 'Mandatorní', data: cMand, backgroundColor: 'rgba(100,52,3,0.5)', borderRadius: 2 },
+            { label: 'Marketing', data: cMktg, backgroundColor: 'rgba(248,161,2,0.7)', borderRadius: 2 },
+            { label: 'Logistika', data: cLog, backgroundColor: 'rgba(52,73,94,0.6)', borderRadius: 2 },
+            { label: 'Balné', data: cBal, backgroundColor: 'rgba(149,165,166,0.5)', borderRadius: 2 },
+        ]
+    },
+    options: {
+        responsive: true,
+        plugins: {
+            tooltip: { callbacks: { label: ctx => ctx.dataset.label + ': ' + fmt(ctx.raw) } },
+            legend: { position: 'bottom' },
+        },
+        scales: {
+            x: { stacked: true, grid: { display: false } },
+            y: { stacked: true, ticks: { callback: v => (v/1000)+'K' }, grid: { color: 'rgba(0,0,0,0.06)' } }
+        }
+    }
+});
+
+// Ratio chart
+const ratio = rev.map((r, i) => r > 0 ? +(cTotal[i] / r * 100).toFixed(1) : 0);
+new Chart(document.getElementById('ratioChart'), {
+    type: 'line',
+    data: {
+        labels: labels,
+        datasets: [{ label: 'Náklady / Tržby', data: ratio, borderColor: '#f8a102', backgroundColor: 'rgba(248,161,2,0.1)', borderWidth: 2, pointRadius: 4, pointBackgroundColor: ratio.map(v => v > 40 ? '#c0392b' : '#009901'), fill: true }]
+    },
+    options: {
+        responsive: true,
+        plugins: {
+            legend: { display: false },
+            tooltip: { callbacks: { label: ctx => ctx.raw + '% tržeb' } },
+        },
+        scales: {
+            y: { ticks: { callback: v => v + '%' }, grid: { color: 'rgba(0,0,0,0.06)' } },
+            x: { grid: { display: false } }
+        }
+    }
+});
+</script>
+</body>
+</html>
