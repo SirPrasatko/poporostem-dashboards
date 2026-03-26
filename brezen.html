@@ -113,7 +113,16 @@ new Chart(ctx, {
         interaction: { mode: 'index', intersect: false },
         plugins: {
             tooltip: { callbacks: {
-                afterTitle: (items) => labels2025[items[0].dataIndex],
+                title: (items) => {
+                    const i = items[0].dataIndex;
+                    return labels2026[i] + ' 2026';
+                },
+                afterTitle: (items) => {
+                    const i = items[0].dataIndex;
+                    const d2025 = labels2025[i];
+                    const dow = labels2026[i].split(' ')[1];
+                    return d2025 + ' (' + dow + ')';
+                },
                 label: (ctx) => ctx.dataset.label + ': ' + ctx.raw.toLocaleString('cs-CZ') + ' Kč',
                 afterBody: (items) => {
                     const i = items[0].dataIndex;
